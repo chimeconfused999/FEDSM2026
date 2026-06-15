@@ -1,0 +1,78 @@
+{
+  "description": "Preliminary CFD integration from automated segmentation masks",
+  "mask_dir": "predicted_masks",
+  "pixel_to_mm_ratio": 0.1,
+  "frames_processed": 3,
+  "frames": [
+    {
+      "frame": "frame_0203",
+      "profile_csv": "geometry/frame_0203_profile.csv",
+      "stl_mesh": "meshes/valve_domain_frame_0203.stl",
+      "velocity_plot": "simulations/velocity_frame_0203.png",
+      "pixel_to_mm": 0.1,
+      "recirculation_proxy": {
+        "low_speed_fraction": 0.25002548160228316,
+        "reverse_flow_fraction": 0.39445520334318623,
+        "low_speed_threshold": 0.0021261379730235994
+      },
+      "geometry": {
+        "opening_angle_deg": null,
+        "leaflet_left_len_px": null,
+        "leaflet_right_len_px": null,
+        "valve_length_px": null,
+        "asymmetry": null,
+        "lumen_area_px": 308349.0,
+        "sinus_height_px": 343.5,
+        "leaflet_curvature_mean": 0.0024968002400518646,
+        "leaflet_curvature_max": 1.414213522373096
+      }
+    },
+    {
+      "frame": "frame_0420",
+      "profile_csv": "geometry/frame_0420_profile.csv",
+      "stl_mesh": "meshes/valve_domain_frame_0420.stl",
+      "velocity_plot": "simulations/velocity_frame_0420.png",
+      "pixel_to_mm": 0.1,
+      "recirculation_proxy": {
+        "low_speed_fraction": 0.24992374173868837,
+        "reverse_flow_fraction": 0.37275038129130655,
+        "low_speed_threshold": 0.0028578142316671054
+      },
+      "geometry": {
+        "opening_angle_deg": 142.6975555419922,
+        "leaflet_left_len_px": 66.50187683105469,
+        "leaflet_right_len_px": 53.78196716308594,
+        "valve_length_px": 60.14192199707031,
+        "asymmetry": 0.21149822362824344,
+        "lumen_area_px": 310806.0,
+        "sinus_height_px": 343.5,
+        "leaflet_curvature_mean": 0.0024968002400518646,
+        "leaflet_curvature_max": 1.414213522373096
+      }
+    },
+    {
+      "frame": "frame_0641",
+      "profile_csv": "geometry/frame_0641_profile.csv",
+      "stl_mesh": "meshes/valve_domain_frame_0641.stl",
+      "velocity_plot": "simulations/velocity_frame_0641.png",
+      "pixel_to_mm": 0.1,
+      "recirculation_proxy": {
+        "low_speed_fraction": 0.2500253575413328,
+        "reverse_flow_fraction": 0.36626432701085304,
+        "low_speed_threshold": 0.001712075498202252
+      },
+      "geometry": {
+        "opening_angle_deg": 49.59648513793945,
+        "leaflet_left_len_px": 67.05221557617188,
+        "leaflet_right_len_px": 76.85050201416016,
+        "valve_length_px": 71.95135879516602,
+        "asymmetry": 0.13617931060735672,
+        "lumen_area_px": 310069.0,
+        "sinus_height_px": 343.5,
+        "leaflet_curvature_mean": 0.0024968002400518646,
+        "leaflet_curvature_max": 1.414213522373096
+      }
+    }
+  ],
+  "openfoam_note": "Import STL meshes into snappyHexMesh or extrude in OpenFOAM. Profile CSV files provide 2D boundary polylines in millimeters."
+}

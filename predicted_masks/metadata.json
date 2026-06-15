@@ -1,0 +1,13 @@
+{
+  "video_path": "Ultrasound_Venous_Valve.avi",
+  "model_path": "trained_valve_model.pth",
+  "fps": 29.97,
+  "frame_count": 1311,
+  "frame_width": 688,
+  "frame_height": 464,
+  "threshold": 0.5,
+  "img_size": [
+    256,
+    256
+  ]
+}

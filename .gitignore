@@ -1,0 +1,20 @@
+# Reinstall locally: pip install -r requirements.txt
+.venv/
+venv/
+
+# Python cache (not project data)
+__pycache__/
+*.py[cod]
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+*.ipynb_checkpoints/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Temporary PDF extraction artifacts
+_pdf_extract/

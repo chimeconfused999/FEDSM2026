@@ -1,0 +1,58 @@
+{
+  "model_path": "trained_valve_model.pth",
+  "manual_gt_dir": "masks_binary2",
+  "num_frames": 32,
+  "metrics": {
+    "opening_angle_deg": {
+      "n_pairs": 32,
+      "mae": 41.86180877685547,
+      "mean_pct_diff": 8719.5537109375,
+      "pearson_r": -0.015282072126865387,
+      "pearson_p": 0.9338407948939431,
+      "bland_altman_bias": 24.543935775756836,
+      "bland_altman_loa_lower": -95.11836936950684,
+      "bland_altman_loa_upper": 144.2062409210205
+    },
+    "valve_length_px": {
+      "n_pairs": 32,
+      "mae": 34.18433475494385,
+      "mean_pct_diff": 8.133879193029768,
+      "pearson_r": -0.0319706598008416,
+      "pearson_p": 0.862099573667473,
+      "bland_altman_bias": -33.69704723358154,
+      "bland_altman_loa_lower": -74.68111642749662,
+      "bland_altman_loa_upper": 7.287021960333526
+    },
+    "sinus_height_px": {
+      "n_pairs": 32,
+      "mae": 2.21875,
+      "mean_pct_diff": 0.6535346097201767,
+      "pearson_r": NaN,
+      "pearson_p": NaN,
+      "bland_altman_bias": -2.21875,
+      "bland_altman_loa_lower": -5.982013004029881,
+      "bland_altman_loa_upper": 1.5445130040298802
+    },
+    "leaflet_curvature_mean": {
+      "n_pairs": 32,
+      "mae": 0.1467226839642259,
+      "mean_pct_diff": 36.85479529202181,
+      "pearson_r": -0.030723429345024478,
+      "pearson_p": 0.8674310892614294,
+      "bland_altman_bias": -0.1467226839642259,
+      "bland_altman_loa_lower": -0.19846181478196878,
+      "bland_altman_loa_upper": -0.09498355314648299
+    },
+    "lumen_area_px": {
+      "n_pairs": 32,
+      "mae": 17017.59375,
+      "mean_pct_diff": 42.928556046413725,
+      "pearson_r": 0.5487540643383853,
+      "pearson_p": 0.0011453628674980264,
+      "bland_altman_bias": -17017.59375,
+      "bland_altman_loa_lower": -20483.582170311864,
+      "bland_altman_loa_upper": -13551.605329688135
+    }
+  },
+  "note": "Automated geometry from model-predicted masks; manual geometry from expert-traced binary masks."
+}
