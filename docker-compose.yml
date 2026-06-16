@@ -1,0 +1,30 @@
+services:
+  fedsm:
+    build: .
+    image: fedsm2026:cpu
+    working_dir: /app
+    # Mount full repo so cloned data + outputs persist on the host
+    volumes:
+      - .:/app
+    environment:
+      # Reduce epochs on CPU if training is too slow (optional)
+      - CAROTID_EPOCHS=50
+    command: python run_carotid.py
+
+  # Validate only (model must exist on host mount)
+  validate-carotid:
+    build: .
+    image: fedsm2026:cpu
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: python run_carotid.py --skip-train
+
+  # Venous full pipeline (CPU — very slow for predict on 1311 frames)
+  venous-pipeline:
+    build: .
+    image: fedsm2026:cpu
+    working_dir: /app
+    volumes:
+      - .:/app
+    command: python run_all.py --skip-predict

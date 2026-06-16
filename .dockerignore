@@ -1,0 +1,24 @@
+.venv
+venv
+__pycache__
+.mypy_cache
+.git
+_pdf_extract
+*.pyc
+.idea
+.vscode
+
+# Exclude data from image build — mount the repo at runtime instead
+images
+images2
+masks_annotated
+masks_binary
+masks_binary2
+predicted_masks
+videos
+Common Carotid Artery Ultrasound Images
+*.avi
+*.pth
+validation_*
+cfd_output
+carotid_train.log
