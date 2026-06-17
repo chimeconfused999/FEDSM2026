@@ -1,160 +1,159 @@
 # CineValve
 
-**Automated venous valve segmentation and motion analysis from 2D B-mode ultrasound.**
+**Open-source deep learning pipeline for venous valve segmentation and motion analysis in 2D B-mode ultrasound cine loops.**
 
-CineValve is an open-source PyTorch pipeline that segments venous valve leaflets in ultrasound cine loops, runs full-sequence inference, and evaluates predictions against expert annotations. It is designed for research workflows in venous hemodynamics and valve biomechanics.
+CineValve turns ultrasound video into per-frame valve segmentations, temporal motion metrics, and quantitative validation against expert annotations. It targets researchers in vascular imaging, venous hemodynamics, and ultrasound-based biomechanics — not a single conference or institution.
 
-**Repository:** [github.com/chimeconfused999/FEDSM2026](https://github.com/chimeconfused999/FEDSM2026)  
-**Author:** [Vyom Kumar](https://github.com/chimeconfused999)
+[![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-U--Net-ee4c2c.svg)](https://pytorch.org/)
+
+**Repository:** [github.com/chimeconfused999/CineValve](https://github.com/chimeconfused999/CineValve)
+
+---
+
+## Why CineValve?
+
+| Problem | What CineValve does |
+|---------|---------------------|
+| Manual valve tracing is slow | U-Net segments leaflets across an entire cine automatically |
+| Frame-by-frame analysis is tedious | One model inference pass over all frames |
+| Hard to compare methods | Standard validation outputs (Dice, IoU, geometry) in one place |
+| Mixed datasets are risky | Built-in guards keep venous and carotid data separate |
 
 ---
 
 ## Features
 
-- U-Net segmentation (Dice + BCE) on expert-filled masks
-- Full-cine inference with per-frame binary masks
-- Temporal motion metrics from mask geometry
-- Combined validation outputs (segmentation + geometry)
-- Optional carotid pretraining dataset in [`carotid/`](carotid/README.md) (separate from venous workflow)
-- Dataset safety guards to prevent cross-contamination between venous and carotid data
+- **Segmentation** — U-Net with Dice + BCE loss on expert-filled masks
+- **Full-cine inference** — per-frame binary masks for every timestep
+- **Motion analysis** — contour-based temporal metrics from predicted masks
+- **Validation** — segmentation and geometry checks vs expert labels
+- **Optional carotid pretraining** — separate [`carotid/`](carotid/README.md) reference dataset
+- **Single CLI** — `python app.py` for extract, train, predict, validate, and more
 
 ---
 
 ## Quick start
 
-```powershell
-git clone https://github.com/chimeconfused999/FEDSM2026.git
-cd FEDSM2026
+```bash
+git clone https://github.com/chimeconfused999/CineValve.git
+cd CineValve
 pip install -r requirements.txt
 ```
 
-Place your ultrasound video at `data/videos/input.avi` (or pass `--video`).
+Add your ultrasound video (e.g. `data/videos/input.avi`) or pass `--video` to any command.
 
-```powershell
-python app.py extract
-python app.py prepare-masks
-python app.py train
-python app.py full
+```bash
+python app.py extract        # video → frames
+python app.py prepare-masks  # annotations → training masks
+python app.py train          # train U-Net
+python app.py full           # predict → motion → validate
 ```
 
-Or run the full pipeline after training:
+Optional editable install:
 
-```powershell
-python app.py full
-```
-
-Install as a CLI (optional):
-
-```powershell
+```bash
 pip install -e .
 cinevalve full
 ```
 
 ---
 
-## Application commands
+## Commands
 
 | Command | Description |
 |---------|-------------|
-| `python app.py full` | Predict → motion → validation → optional CFD export |
-| `python app.py train` | Train venous U-Net |
-| `python app.py predict` | Segment video frames |
-| `python app.py extract` | Video → `data/images/` |
-| `python app.py prepare-masks` | Annotations → `data/masks/training/` |
-| `python app.py motion` | Temporal metrics |
+| `python app.py full` | End-to-end: predict → motion → validation → optional CFD export |
+| `python app.py train` | Train venous U-Net on `data/masks/training/` |
+| `python app.py predict` | Segment all frames from a video |
+| `python app.py extract` | Extract frames to `data/images/` |
+| `python app.py prepare-masks` | Build training masks from annotations |
+| `python app.py motion` | Temporal valve metrics from predictions |
 | `python app.py validate` | Segmentation + geometry validation |
-| `python app.py check` | Dataset path safety check |
+| `python app.py check` | Verify venous/carotid path separation |
 | `python app.py carotid` | Optional carotid workflow ([details](carotid/README.md)) |
 
 ---
 
-## Repository layout
+## Project structure
 
 ```
-CineValve/
-├── app.py                 # Unified CLI
-├── run_all.py             # Full venous pipeline
-├── cinevalve/             # Core library (model, training, config, safety)
-├── scripts/
-│   ├── data/              # Frame extraction, mask preparation
-│   ├── train/             # Venous training
-│   ├── infer/             # Prediction and motion analysis
-│   ├── validate/          # Venous validation
-│   ├── utils/             # Safety and data checks
-│   └── optional/          # CFD geometry export
+├── app.py                      # Unified CLI
+├── cinevalve/                  # Core library (model, training, config)
+├── scripts/                    # Pipeline scripts (data, train, infer, validate)
 ├── data/
-│   ├── images/            # Extracted frames
-│   ├── masks/             # Annotated + training masks
-│   └── videos/            # Your input video (add locally)
-├── models/venous/         # Venous checkpoint
+│   ├── images/                 # Extracted frames
+│   ├── masks/annotated/        # Expert tracings
+│   ├── masks/training/         # Binary training masks
+│   └── videos/                 # Your input video (add locally)
+├── models/venous/              # Trained checkpoint
 ├── outputs/
-│   ├── predictions/       # Per-frame segmentations
-│   ├── validation/        # All validation results
-│   ├── motion/            # Temporal metrics
-│   └── cfd/               # Optional geometry export
-└── carotid/               # Optional reference dataset (see carotid/README.md)
+│   ├── predictions/            # Per-frame segmentations
+│   ├── validation/             # Segmentation + geometry results
+│   ├── motion/                 # Temporal metrics
+│   └── cfd/                    # Optional geometry export
+└── carotid/                    # Optional reference dataset
 ```
 
 ---
 
-## Pipeline overview
+## Pipeline
 
-1. **Extract frames** from an ultrasound cine → `data/images/`
-2. **Prepare masks** from expert annotations → `data/masks/training/`
+1. **Extract** frames from a B-mode cine → `data/images/`
+2. **Prepare** expert annotations → `data/masks/training/`
 3. **Train** a U-Net → `models/venous/trained_valve_model.pth`
-4. **Predict** masks for every frame → `outputs/predictions/`
-5. **Analyze motion** → `outputs/motion/`
-6. **Validate** against experts → `outputs/validation/`
+4. **Predict** on every frame → `outputs/predictions/`
+5. **Analyze** motion over time → `outputs/motion/`
+6. **Validate** vs experts → `outputs/validation/`
 
-Validation reports Dice, IoU, precision, recall, and geometry comparisons (valve length, opening-angle proxy, etc.). Geometry metrics vary in reliability; segmentation metrics against expert-filled masks are the primary benchmark.
+Validation includes Dice, IoU, precision, recall, and geometry comparisons. Segmentation agreement with expert-filled masks is the most reliable benchmark; some geometry proxies are exploratory and depend on image quality and annotation style.
 
 ---
 
 ## Carotid reference dataset
 
-The [`carotid/`](carotid/README.md) folder contains an **optional** common-carotid-artery ultrasound dataset (~1,100 image–mask pairs) used for pretraining experiments. It is isolated from venous data:
+The [`carotid/`](carotid/README.md) folder holds an **optional** common-carotid-artery ultrasound dataset (~1,100 image–mask pairs) for pretraining experiments. It is fully isolated from the venous workflow:
 
-- Carotid masks = **filled lumen**, not vessel wall
-- Carotid scripts cannot write to `data/` or `models/venous/`
-- Useful for transfer learning: `python app.py train --pretrain carotid/models/trained_carotid_model.pth`
+- Masks label the **lumen cavity**, not the vessel wall
+- Carotid scripts cannot overwrite venous `data/` or `models/venous/`
+- Transfer learning example:
 
-This is a **reference workflow**, not the main venous-valve use case.
+```bash
+python app.py train --pretrain carotid/models/trained_carotid_model.pth
+```
 
 ---
 
 ## Requirements
 
 - Python 3.9+
-- PyTorch + torchvision
-- OpenCV, Pillow, NumPy, Matplotlib, scikit-image, pandas, tqdm
+- PyTorch, torchvision, OpenCV, Pillow, NumPy, Matplotlib, scikit-image, pandas, tqdm
 
-See [`requirements.txt`](requirements.txt). For GPU training on Windows, install the CUDA PyTorch build from [pytorch.org](https://pytorch.org/).
+See [`requirements.txt`](requirements.txt). For GPU training, install the CUDA PyTorch build from [pytorch.org](https://pytorch.org/).
 
 ---
 
 ## Dataset safety
 
-`cinevalve/safety.py` blocks accidental overwrites between venous and carotid paths. Run before training:
+`cinevalve/safety.py` prevents accidental cross-writes between venous and carotid paths:
 
-```powershell
+```bash
 python app.py check
 ```
 
-Protected venous folders require `--confirm-overwrite-venous` to replace existing predictions.
+Refreshing protected prediction folders requires `--confirm-overwrite-venous`.
 
 ---
 
 ## Outputs
 
-All generated results live under `outputs/`:
-
-| Subfolder | Contents |
-|-----------|----------|
-| `predictions/` | `frame_XXXX.png` masks + `metadata.json` |
-| `validation/segmentation/` | Dice/IoU summaries, overlays, per-frame CSV |
-| `validation/geometry/` | Bland–Altman plots, geometry JSON |
-| `motion/` | `valve_metrics.csv`, plots, summary JSON |
-| `cfd/` | Optional profile CSVs and flow-proxy maps |
+| Location | Contents |
+|----------|----------|
+| `outputs/predictions/` | Per-frame masks + `metadata.json` |
+| `outputs/validation/segmentation/` | Dice/IoU summaries, overlays, CSV |
+| `outputs/validation/geometry/` | Bland–Altman plots, geometry JSON |
+| `outputs/motion/` | `valve_metrics.csv`, plots, summary JSON |
+| `outputs/cfd/` | Optional profile CSVs and flow-proxy maps |
 
 ---
 
@@ -162,19 +161,28 @@ All generated results live under `outputs/`:
 
 | Issue | Fix |
 |-------|-----|
-| `Model not found` | Run `python app.py train` or download/place weights in `models/venous/` |
-| `Video not found` | Add `data/videos/input.avi` or use `--video path/to/file.avi` |
-| `REFUSED: protected folder` | Pass `--confirm-overwrite-venous` when refreshing predictions |
-| `python` opens an editor | Use `py app.py full` on Windows |
-
----
-
-## License
-
-MIT — see repository for details. Ultrasound data is for research use; add your own videos locally.
+| `Model not found` | Run `python app.py train` or place weights in `models/venous/` |
+| `Video not found` | Add `data/videos/input.avi` or pass `--video` |
+| `REFUSED: protected folder` | Use `--confirm-overwrite-venous` when replacing predictions |
+| `python` opens an editor (Windows) | Use `py app.py full` |
 
 ---
 
 ## Citation
 
-If you use CineValve in your work, please cite the repository and credit the author. Suggested name: **CineValve** (cine ultrasound valve analysis).
+If you use this software in published work, please cite the repository:
+
+```bibtex
+@software{cinevalve,
+  title   = {CineValve: Ultrasound Venous Valve Segmentation and Analysis},
+  author  = {Kumar, Vyom},
+  year    = {2026},
+  url     = {https://github.com/chimeconfused999/CineValve}
+}
+```
+
+---
+
+## License
+
+MIT — ultrasound data is not redistributed; add your own videos and annotations for training.
