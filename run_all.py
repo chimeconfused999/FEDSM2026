@@ -3,8 +3,6 @@ Run the full venous valve analysis pipeline with one command:
 
   predict masks -> motion analysis -> segmentation validation ->
   geometry validation -> CFD geometry export
-
-All steps use the same model checkpoint (trained_valve_model.pth by default).
 """
 
 import argparse
@@ -13,7 +11,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from pipeline_config import (
+from fedsm.config import (
     CFD_OUTPUT_DIR,
     DEFAULT_FPS,
     DEFAULT_MASKS_DIR,
@@ -25,9 +23,17 @@ from pipeline_config import (
     VALIDATION_GEOMETRY_OUT,
     VALIDATION_SEGMENTATION_OUT,
 )
-from dataset_safety import CAROTID_MODEL, is_protected_venous_dir
+from fedsm.safety import CAROTID_MODEL, is_protected_venous_dir
 
 ROOT = Path(__file__).resolve().parent
+
+SCRIPTS = {
+    "predict": ROOT / "scripts" / "infer" / "predict_masks.py",
+    "motion": ROOT / "scripts" / "infer" / "valve_motion_analysis.py",
+    "segmentation": ROOT / "scripts" / "validate" / "validate_segmentation.py",
+    "geometry": ROOT / "scripts" / "validate" / "validate_geometry.py",
+    "cfd": ROOT / "scripts" / "optional" / "cfd_preliminary.py",
+}
 
 
 def run_step(name: str, cmd: list[str]) -> None:
@@ -75,7 +81,7 @@ def main() -> None:
     if not model_path.is_file():
         raise SystemExit(f"Model not found: {model_path}")
 
-    if Path(args.model).name == CAROTID_MODEL:
+    if model_path.name == Path(CAROTID_MODEL).name:
         raise SystemExit(
             f"REFUSED: run_all.py is the venous pipeline; do not use carotid model '{CAROTID_MODEL}'."
         )
@@ -84,16 +90,11 @@ def main() -> None:
 
     if not args.skip_predict:
         predict_cmd = [
-            py,
-            "predict_masks.py",
-            "--video",
-            args.video,
-            "--model",
-            str(model_path),
-            "--out",
-            args.masks,
-            "--threshold",
-            str(args.threshold),
+            py, str(SCRIPTS["predict"]),
+            "--video", args.video,
+            "--model", str(model_path),
+            "--out", args.masks,
+            "--threshold", str(args.threshold),
         ]
         if is_protected_venous_dir(args.masks):
             predict_cmd.append("--confirm-overwrite-venous")
@@ -106,68 +107,38 @@ def main() -> None:
     metrics_prefix = VALVE_METRICS_PREFIX
 
     if not args.skip_motion:
-        run_step(
-            "2/5 Valve motion analysis",
-            [
-                py,
-                "valve_motion_analysis.py",
-                "--masks",
-                args.masks,
-                "--fps",
-                str(fps),
-                "--out",
-                metrics_prefix,
-            ],
-        )
+        run_step("2/5 Valve motion analysis", [
+            py, str(SCRIPTS["motion"]),
+            "--masks", args.masks,
+            "--fps", str(fps),
+            "--out", metrics_prefix,
+        ])
 
     if not args.skip_segmentation:
-        run_step(
-            "3/5 Segmentation validation",
-            [
-                py,
-                "validate_segmentation.py",
-                "--model",
-                str(model_path),
-                "--threshold",
-                str(args.threshold),
-                "--out",
-                VALIDATION_SEGMENTATION_OUT,
-            ],
-        )
+        run_step("3/5 Segmentation validation", [
+            py, str(SCRIPTS["segmentation"]),
+            "--model", str(model_path),
+            "--threshold", str(args.threshold),
+            "--out", VALIDATION_SEGMENTATION_OUT,
+        ])
 
     if not args.skip_geometry:
-        run_step(
-            "4/5 Geometry validation",
-            [
-                py,
-                "validate_geometry.py",
-                "--model",
-                str(model_path),
-                "--threshold",
-                str(args.threshold),
-                "--out",
-                VALIDATION_GEOMETRY_OUT,
-            ],
-        )
+        run_step("4/5 Geometry validation", [
+            py, str(SCRIPTS["geometry"]),
+            "--model", str(model_path),
+            "--threshold", str(args.threshold),
+            "--out", VALIDATION_GEOMETRY_OUT,
+        ])
 
     if not args.skip_cfd:
-        run_step(
-            "5/5 CFD geometry export",
-            [
-                py,
-                "cfd_preliminary.py",
-                "--masks",
-                args.masks,
-                "--metrics-summary",
-                f"{metrics_prefix}_summary.json",
-                "--pixel-to-mm",
-                str(args.pixel_to_mm),
-                "--out",
-                CFD_OUTPUT_DIR,
-                "--num-frames",
-                str(args.cfd_frames),
-            ],
-        )
+        run_step("5/5 CFD geometry export", [
+            py, str(SCRIPTS["cfd"]),
+            "--masks", args.masks,
+            "--metrics-summary", f"{metrics_prefix}_summary.json",
+            "--pixel-to-mm", str(args.pixel_to_mm),
+            "--out", CFD_OUTPUT_DIR,
+            "--num-frames", str(args.cfd_frames),
+        ])
 
     print(f"\n{'=' * 60}")
     print("Pipeline complete")

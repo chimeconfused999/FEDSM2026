@@ -2,7 +2,7 @@
 .venv/
 venv/
 
-# Python cache (not project data)
+# Python cache
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -16,5 +16,14 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Temporary PDF extraction artifacts
+# Agent / local notes (not for GitHub)
+cursor_document_update_review.md
+archive/
+
+# Temporary PDF extraction
 _pdf_extract/
+
+# Large regeneratable intermediates (keep expert masks + model in repo)
+# Uncomment if you prefer a slimmer clone:
+# predicted_masks/
+# cfd_output/
