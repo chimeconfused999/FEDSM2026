@@ -1,0 +1,58 @@
+{
+  "model_path": "trained_valve_model.pth",
+  "manual_gt_dir": "masks_binary2",
+  "num_frames": 47,
+  "metrics": {
+    "opening_angle_deg": {
+      "n_pairs": 47,
+      "mae": 40.573570251464844,
+      "mean_pct_diff": 10149.5771484375,
+      "pearson_r": 0.22336071729660034,
+      "pearson_p": 0.1312502920627594,
+      "bland_altman_bias": 31.959184646606445,
+      "bland_altman_loa_lower": -76.85624046325684,
+      "bland_altman_loa_upper": 140.77460975646972
+    },
+    "valve_length_px": {
+      "n_pairs": 47,
+      "mae": 30.751928775868517,
+      "mean_pct_diff": 7.310438147765028,
+      "pearson_r": -0.12780672636215495,
+      "pearson_p": 0.39192942668305303,
+      "bland_altman_bias": -26.565836480323306,
+      "bland_altman_loa_lower": -77.465347016746,
+      "bland_altman_loa_upper": 24.333674056099383
+    },
+    "sinus_height_px": {
+      "n_pairs": 47,
+      "mae": 3.276595744680851,
+      "mean_pct_diff": 0.965123930686554,
+      "pearson_r": NaN,
+      "pearson_p": NaN,
+      "bland_altman_bias": -3.276595744680851,
+      "bland_altman_loa_lower": -8.182049477428574,
+      "bland_altman_loa_upper": 1.6288579880668714
+    },
+    "leaflet_curvature_mean": {
+      "n_pairs": 47,
+      "mae": 0.14488791120124792,
+      "mean_pct_diff": 36.221300998408644,
+      "pearson_r": 0.15856311470014794,
+      "pearson_p": 0.28708648575945017,
+      "bland_altman_bias": -0.14488791120124792,
+      "bland_altman_loa_lower": -0.19083028619407247,
+      "bland_altman_loa_upper": -0.09894553620842336
+    },
+    "lumen_area_px": {
+      "n_pairs": 47,
+      "mae": 17517.17021276596,
+      "mean_pct_diff": 43.57677962236163,
+      "pearson_r": 0.4128664342980249,
+      "pearson_p": 0.003924883399699261,
+      "bland_altman_bias": -17517.17021276596,
+      "bland_altman_loa_lower": -21448.98836495817,
+      "bland_altman_loa_upper": -13585.352060573747
+    }
+  },
+  "note": "Automated geometry from model-predicted masks; manual geometry from expert-traced binary masks."
+}

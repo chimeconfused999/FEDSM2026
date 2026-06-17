@@ -4,7 +4,7 @@ import os
 import cv2
 import numpy as np
 
-from fedsm.safety import assert_safe_output_dir
+from cinevalve.safety import assert_safe_output_dir
 
 LOWER_GREEN = np.array([40, 40, 40])
 UPPER_GREEN = np.array([90, 255, 255])
@@ -37,7 +37,7 @@ def convert_green_to_binary(input_folder, output_folder, confirm_overwrite_venou
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Convert green annotations to binary masks.")
     parser.add_argument("--input", default="images2", help="Folder with green-annotated images")
-    parser.add_argument("--out", default="masks_binary2", help="Output folder for binary masks")
+    parser.add_argument("--out", default="data/masks/training", help="Output folder for binary masks")
     parser.add_argument(
         "--confirm-overwrite-venous",
         action="store_true",

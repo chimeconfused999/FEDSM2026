@@ -221,7 +221,7 @@ def select_representative_frames(metrics_summary_path, mask_dir, num=3):
 
 def main():
     parser = argparse.ArgumentParser(description="Preliminary CFD geometry export and flow simulation.")
-    parser.add_argument("--masks", default="predicted_masks", help="Directory of predicted binary masks")
+    parser.add_argument("--masks", default="outputs/predictions", help="Directory of predicted binary masks")
     parser.add_argument("--metrics-summary", default="valve_metrics_summary.json")
     parser.add_argument("--pixel-to-mm", type=float, default=0.1)
     parser.add_argument("--out", default="cfd_output")
@@ -266,7 +266,7 @@ def main():
         plot_path = os.path.join(sim_dir, f"velocity_{stem}.png")
         plot_flow_field(speed, fluid, contour, scale, plot_path, f"Preliminary flow — {stem}")
 
-        from fedsm.geometry import extract_frame_geometry
+        from cinevalve.geometry import extract_frame_geometry
         geom = extract_frame_geometry(lumen.astype(np.uint8))
 
         frame_result = {

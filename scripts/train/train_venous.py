@@ -6,8 +6,8 @@ Uses dataset safety checks so carotid paths/models are never touched.
 
 import argparse
 
-from fedsm.safety import VENOUS_HISTORY, VENOUS_IMAGE_DIR, VENOUS_MASK_DIR, VENOUS_MODEL
-from fedsm.training import run_training
+from cinevalve.safety import VENOUS_HISTORY, VENOUS_IMAGE_DIR, VENOUS_MASK_DIR, VENOUS_MODEL
+from cinevalve.training import run_training
 
 
 def main():

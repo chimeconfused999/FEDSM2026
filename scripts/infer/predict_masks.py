@@ -4,9 +4,9 @@ import cv2
 import torch
 import torchvision.transforms as T
 from PIL import Image
-from fedsm.model import UNetEdgeDetector
-from fedsm.config import DEFAULT_MODEL, DEFAULT_VIDEO, DEFAULT_MASKS_DIR, DEFAULT_THRESHOLD, DEFAULT_IMG_SIZE
-from fedsm.safety import assert_safe_output_dir, is_protected_venous_dir
+from cinevalve.model import UNetEdgeDetector
+from cinevalve.config import DEFAULT_MODEL, DEFAULT_VIDEO, DEFAULT_MASKS_DIR, DEFAULT_THRESHOLD, DEFAULT_IMG_SIZE
+from cinevalve.safety import assert_safe_output_dir, is_protected_venous_dir
 
 
 def predict_masks(

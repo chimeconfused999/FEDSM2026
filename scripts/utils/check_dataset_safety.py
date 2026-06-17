@@ -4,7 +4,7 @@ Verify dataset safety rules without running training.
   python check_dataset_safety.py
 """
 
-from fedsm.safety import (
+from cinevalve.safety import (
     CAROTID_IMAGE_DIR,
     CAROTID_MASK_DIR,
     CAROTID_MODEL,

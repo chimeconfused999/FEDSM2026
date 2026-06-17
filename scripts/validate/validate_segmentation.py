@@ -16,10 +16,10 @@ import torchvision.transforms as T
 from PIL import Image
 from torch.utils.data import DataLoader, random_split
 
-from fedsm.geometry import dice_coefficient, iou_coefficient, pixel_accuracy
-from fedsm.config import DEFAULT_MODEL, VALIDATION_SEGMENTATION_OUT
-from fedsm.model import UNetEdgeDetector
-from fedsm.training import ValveFeatureDataset, IMG_SIZE, VALIDATION_SPLIT
+from cinevalve.geometry import dice_coefficient, iou_coefficient, pixel_accuracy
+from cinevalve.config import DEFAULT_MODEL, VALIDATION_SEGMENTATION_OUT
+from cinevalve.model import UNetEdgeDetector
+from cinevalve.training import ValveFeatureDataset, IMG_SIZE, VALIDATION_SPLIT
 
 
 def load_model(model_path, device):
@@ -212,11 +212,11 @@ def main():
     parser = argparse.ArgumentParser(description="Validate segmentation against manual ground truth.")
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--images", default="images")
-    parser.add_argument("--gt", default="masks_binary2", help="Ground-truth masks for expert frames")
-    parser.add_argument("--annotated-dir", default="masks_annotated", help="Raw hand annotations")
+    parser.add_argument("--gt", default="data/masks/training", help="Ground-truth masks for expert frames")
+    parser.add_argument("--annotated-dir", default="data/masks/annotated", help="Raw hand annotations")
     parser.add_argument("--dilate-gt", type=int, default=0, help="Dilate GT mask (px) for thin edge tolerance")
     parser.add_argument("--dilate-annotated", type=int, default=5, help="Dilate when loading raw annotations")
-    parser.add_argument("--full-mask-dir", default="masks_binary2", help="For val-split evaluation")
+    parser.add_argument("--full-mask-dir", default="data/masks/training", help="For val-split evaluation")
     parser.add_argument("--threshold", type=float, default=0.5)
     parser.add_argument("--out", default=VALIDATION_SEGMENTATION_OUT)
     args = parser.parse_args()

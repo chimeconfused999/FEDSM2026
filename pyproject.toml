@@ -3,9 +3,9 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "fedsm2026"
+name = "cinevalve"
 version = "1.0.0"
-description = "Automated venous valve analysis from 2D B-mode ultrasound"
+description = "Automated venous valve segmentation and analysis from 2D B-mode ultrasound"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
@@ -20,12 +20,11 @@ dependencies = [
     "tqdm>=4.60.0",
     "scikit-image>=0.18.0",
     "scipy>=1.6.0",
-    "numpy-stl>=2.16.0",
     "pandas>=1.2.0",
 ]
 
 [project.scripts]
-fedsm = "app:main"
+cinevalve = "app:main"
 
 [tool.setuptools.packages.find]
-include = ["fedsm*"]
+include = ["cinevalve*"]

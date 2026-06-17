@@ -11,7 +11,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from fedsm.config import (
+from cinevalve.config import (
     CFD_OUTPUT_DIR,
     DEFAULT_FPS,
     DEFAULT_MASKS_DIR,
@@ -23,7 +23,7 @@ from fedsm.config import (
     VALIDATION_GEOMETRY_OUT,
     VALIDATION_SEGMENTATION_OUT,
 )
-from fedsm.safety import CAROTID_MODEL, is_protected_venous_dir
+from cinevalve.safety import CAROTID_MODEL, is_protected_venous_dir
 
 ROOT = Path(__file__).resolve().parent
 

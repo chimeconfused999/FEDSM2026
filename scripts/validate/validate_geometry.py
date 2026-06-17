@@ -13,8 +13,8 @@ import numpy as np
 import torch
 from scipy import stats
 
-from fedsm.geometry import extract_frame_geometry, load_binary_mask
-from fedsm.config import DEFAULT_MODEL, VALIDATION_GEOMETRY_OUT
+from cinevalve.geometry import extract_frame_geometry, load_binary_mask
+from cinevalve.config import DEFAULT_MODEL, VALIDATION_GEOMETRY_OUT
 from validate_segmentation import collect_manual_pairs, load_model, predict_mask
 
 
@@ -117,8 +117,8 @@ def main():
     parser = argparse.ArgumentParser(description="Validate geometric metrics vs manual masks.")
     parser.add_argument("--model", default=DEFAULT_MODEL)
     parser.add_argument("--images", default="images")
-    parser.add_argument("--manual-gt", default="masks_binary2", help="Ground-truth masks (training format)")
-    parser.add_argument("--annotated-dir", default="masks_annotated", help="Limit to hand-annotated frames")
+    parser.add_argument("--manual-gt", default="data/masks/training", help="Ground-truth masks (training format)")
+    parser.add_argument("--annotated-dir", default="data/masks/annotated", help="Limit to hand-annotated frames")
     parser.add_argument("--threshold", type=float, default=0.5)
     parser.add_argument("--out", default=VALIDATION_GEOMETRY_OUT)
     args = parser.parse_args()

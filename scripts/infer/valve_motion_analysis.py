@@ -669,7 +669,7 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Analyze valve motion from binary masks.")
-    parser.add_argument("--masks", default="predicted_masks", help="Directory of binary masks")
+    parser.add_argument("--masks", default="outputs/predictions", help="Directory of binary masks")
     parser.add_argument("--fps", type=float, default=29.97, help="Frames per second")
     parser.add_argument("--max-jump", type=float, default=8.0, help="Max pixel jump per frame")
     parser.add_argument("--smooth", type=int, default=15, help="Median smoothing window (frames)")

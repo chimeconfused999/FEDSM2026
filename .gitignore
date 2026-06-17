@@ -8,7 +8,6 @@ __pycache__/
 *.egg-info/
 .mypy_cache/
 .pytest_cache/
-*.ipynb_checkpoints/
 
 # IDE / OS
 .idea/
@@ -16,14 +15,18 @@ __pycache__/
 .DS_Store
 Thumbs.db
 
-# Agent / local notes (not for GitHub)
-cursor_document_update_review.md
+# Large local media (add your own; not required in public repo)
+data/videos/
+*.avi
+*.pdf
+*.pptx.pdf
+
+# Agent / private local backup (outside repo)
+# D:/CineValve-local/
+
+# Legacy / generated clutter
 archive/
-
-# Temporary PDF extraction
 _pdf_extract/
-
-# Large regeneratable intermediates (keep expert masks + model in repo)
-# Uncomment if you prefer a slimmer clone:
-# predicted_masks/
-# cfd_output/
+*.stl
+valve_metrics_poster.png
+pipeline_code_flowchart.png

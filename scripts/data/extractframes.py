@@ -2,8 +2,8 @@ import argparse
 import cv2
 import os
 
-from fedsm.safety import assert_safe_output_dir
-from fedsm.config import DEFAULT_VIDEO
+from cinevalve.safety import assert_safe_output_dir
+from cinevalve.config import DEFAULT_VIDEO
 
 
 def extract_frames(video_path, output_folder, confirm_overwrite_venous=False):

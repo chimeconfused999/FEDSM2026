@@ -1,19 +1,5 @@
 #!/usr/bin/env python3
-"""
-FEDSM 2026 — unified application for venous valve ultrasound analysis.
-
-Usage:
-  python app.py full              # run entire venous pipeline
-  python app.py train             # train U-Net on expert masks
-  python app.py predict           # segment video frames
-  python app.py extract           # video -> images/
-  python app.py prepare-masks     # annotations -> masks_binary2/
-  python app.py motion            # temporal metrics from masks
-  python app.py validate          # segmentation + geometry validation
-  python app.py carotid           # optional carotid workflow
-  python app.py poster            # regenerate poster figures
-  python app.py check             # dataset safety checks
-"""
+"""CineValve — unified CLI for venous valve ultrasound analysis."""
 
 from __future__ import annotations
 
@@ -26,7 +12,7 @@ ROOT = Path(__file__).resolve().parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from fedsm.config import DEFAULT_MODEL, DEFAULT_THRESHOLD, DEFAULT_VIDEO  # noqa: E402
+from cinevalve.config import DEFAULT_MODEL, DEFAULT_THRESHOLD, DEFAULT_VIDEO  # noqa: E402
 
 SCRIPTS = {
     "extract": ROOT / "scripts" / "data" / "extractframes.py",
@@ -36,11 +22,9 @@ SCRIPTS = {
     "motion": ROOT / "scripts" / "infer" / "valve_motion_analysis.py",
     "validate-seg": ROOT / "scripts" / "validate" / "validate_segmentation.py",
     "validate-geom": ROOT / "scripts" / "validate" / "validate_geometry.py",
-    "carotid": ROOT / "scripts" / "optional" / "run_carotid.py",
+    "carotid": ROOT / "carotid" / "scripts" / "run_carotid.py",
     "cfd": ROOT / "scripts" / "optional" / "cfd_preliminary.py",
     "check": ROOT / "scripts" / "utils" / "check_dataset_safety.py",
-    "flowchart": ROOT / "scripts" / "poster" / "make_pipeline_flowchart.py",
-    "table": ROOT / "scripts" / "poster" / "make_dataset_table.py",
     "full": ROOT / "run_all.py",
 }
 
@@ -77,30 +61,23 @@ def cmd_predict(args: argparse.Namespace) -> int:
     extra = ["--video", args.video, "--model", args.model]
     if args.threshold is not None:
         extra.extend(["--threshold", str(args.threshold)])
-    extra.extend(["--confirm-overwrite-venous"])
+    extra.append("--confirm-overwrite-venous")
     return run_script(SCRIPTS["predict"], extra)
 
 
 def cmd_validate(args: argparse.Namespace) -> int:
-    rc = 0
     extra = ["--model", args.model]
     if args.threshold is not None:
         extra.extend(["--threshold", str(args.threshold)])
-    rc |= run_script(SCRIPTS["validate-seg"], extra)
+    rc = run_script(SCRIPTS["validate-seg"], extra)
     rc |= run_script(SCRIPTS["validate-geom"], extra)
-    return rc
-
-
-def cmd_poster(_: argparse.Namespace) -> int:
-    rc = run_script(SCRIPTS["flowchart"])
-    rc |= run_script(SCRIPTS["table"])
     return rc
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        prog="fedsm",
-        description="Automated venous valve analysis from 2D B-mode ultrasound (FEDSM 2026).",
+        prog="cinevalve",
+        description="Automated venous valve segmentation and analysis from 2D B-mode ultrasound.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -110,9 +87,9 @@ def main() -> None:
     p_full.add_argument("--skip-cfd", action="store_true")
     p_full.set_defaults(func=cmd_full)
 
-    p_train = sub.add_parser("train", help="Train venous U-Net on masks_binary2/")
+    p_train = sub.add_parser("train", help="Train venous U-Net")
     p_train.add_argument("--epochs", type=int, default=None)
-    p_train.add_argument("--pretrain", default=None, help="Optional carotid checkpoint")
+    p_train.add_argument("--pretrain", default=None)
     p_train.set_defaults(func=cmd_train)
 
     p_pred = sub.add_parser("predict", help="Segment valve in video frames")
@@ -123,11 +100,11 @@ def main() -> None:
 
     for name, help_text in [
         ("extract", "Extract frames from ultrasound video"),
-        ("prepare-masks", "Build masks_binary2/ from masks_annotated/"),
-        ("motion", "Compute valve motion metrics from predicted masks"),
-        ("check", "Verify venous/carotid dataset separation"),
-        ("carotid", "Train and validate carotid model (optional)"),
-        ("cfd", "Export preliminary CFD geometry (optional)"),
+        ("prepare-masks", "Build training masks from annotations"),
+        ("motion", "Motion metrics from predicted masks"),
+        ("check", "Verify venous/carotid path separation"),
+        ("carotid", "Carotid train + validate (see carotid/README.md)"),
+        ("cfd", "Optional geometry export"),
     ]:
         p = sub.add_parser(name, help=help_text)
 
@@ -142,9 +119,6 @@ def main() -> None:
     p_val.add_argument("--model", default=DEFAULT_MODEL)
     p_val.add_argument("--threshold", type=float, default=None)
     p_val.set_defaults(func=cmd_validate)
-
-    p_poster = sub.add_parser("poster", help="Regenerate flowchart and dataset table PNGs")
-    p_poster.set_defaults(func=cmd_poster)
 
     args = parser.parse_args()
     code = args.func(args)
